@@ -20,24 +20,6 @@ namespace API.Data
             this.context = context;
             this.mapper = mapper;
         }
-
-        public void Update(AppUser user)
-        {
-            context.Entry(user).State = EntityState.Modified;
-        }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await context.SaveChangesAsync() > 0;
-        }
-
-        public async Task<IEnumerable<AppUser>> GetUsersAsync()
-        {
-            return await context.Users
-            .Include(p =>p.Photos)
-            .ToListAsync();
-        }
-
         public async Task<AppUser> GetUserByIdAsync(int id)
         {
             return await context.Users.FindAsync(id);
@@ -48,6 +30,23 @@ namespace API.Data
             return await context.Users
             .Include(p =>p.Photos)
             .SingleOrDefaultAsync(x =>x.UserName == username);
+        }
+                public async Task<IEnumerable<AppUser>> GetUsersAsync()
+        {
+            return await context.Users
+            .Include(p =>p.Photos)
+            .ToListAsync();
+        }
+
+
+        public void Update(AppUser user)
+        {
+            context.Entry(user).State = EntityState.Modified;
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            return await context.SaveChangesAsync() > 0;
         }
 
         public async Task<IEnumerable<MemberDto>> GetMembersAsync()
