@@ -48,7 +48,7 @@ namespace API.Controllers
             //tutaj sie ejbie usersto return a powinno bytc users
         }
 
-        [Authorize]
+
         [HttpGet("{username}", Name = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
