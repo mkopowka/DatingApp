@@ -23,8 +23,8 @@ namespace API.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
+            _userManager = userManager;
             _tokenService = tokenService;
             _mapper = mapper;
         }
@@ -49,7 +49,7 @@ namespace API.Controllers
             
             var roleResult = await _userManager.AddToRoleAsync(user, "Member");
 
-            if(!result.Succeeded) return BadRequest(result.Errors);  
+            if(!roleResult.Succeeded) return BadRequest(result.Errors);  
             
             return new UserDto
             {
