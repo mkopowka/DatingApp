@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using API.Extensions;
 using API.Middleware;
+using API.SignalR;
 
 namespace API
 {
@@ -38,8 +39,16 @@ namespace API
         {
             services.AddApplicationServices(_config);
             services.AddControllers();
-            services.AddCors();
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+            builder =>
+            {
+                builder.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowCredentials();
+            }));
             services.AddIdentityServices(_config);
+            services.AddSignalR();
             //services.AddSwaggerGen(c =>
             //{
                 //c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
@@ -53,10 +62,8 @@ namespace API
 
             app.UseHttpsRedirection();
 
+            app.UseCors("CorsPolicy");
             app.UseRouting();
-
-
-            app.UseCors( x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
             app.UseAuthentication();
 
@@ -65,6 +72,8 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<PresenceHub>("/hubs/presence");
+                endpoints.MapHub<PresenceHub>("/hubs/message");
             });
         }
     }
