@@ -61,19 +61,21 @@ namespace API
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseHttpsRedirection();
-
-            app.UseCors("CorsPolicy");
             app.UseRouting();
 
-            app.UseAuthentication();
+            app.UseCors(x => x.AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .WithOrigins("https://localhost:4200"));
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<PresenceHub>("/hubs/presence");
-                endpoints.MapHub<PresenceHub>("/hubs/message");
+                endpoints.MapHub<PresenceHub>("hubs/presence");
+                endpoints.MapHub<MessageHub>("hubs/message");
             });
         }
     }
